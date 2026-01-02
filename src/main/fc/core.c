@@ -1094,8 +1094,17 @@ void processRxModes(timeUs_t currentTimeUs)
         if (!FLIGHT_MODE(GPS_RESCUE_MODE)) {
             ENABLE_FLIGHT_MODE(GPS_RESCUE_MODE);
         }
+    } else if (ARMING_FLAG(ARMED) && IS_RC_MODE_ACTIVE(BOXLANDMODE)) {
+        if (!FLIGHT_MODE(GPS_RESCUE_MODE)) {
+            GPS_force_reset_home_position();
+            ENABLE_FLIGHT_MODE(GPS_RESCUE_MODE);
+        }
     } else {
         DISABLE_FLIGHT_MODE(GPS_RESCUE_MODE);
+        if(GPS_true_home_llh.lat){
+            GPS_home_llh = GPS_true_home_llh;
+        }
+       
     }
 #endif
 

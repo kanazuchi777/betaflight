@@ -303,6 +303,7 @@ typedef struct gpsData_s {
 } gpsData_t;
 
 extern gpsLocation_t GPS_home_llh;
+extern gpsLocation_t GPS_true_home_llh;
 extern uint16_t GPS_distanceToHome;        // distance to home point in meters
 extern uint32_t GPS_distanceToHomeCm;      // distance to home point in cm
 extern int16_t GPS_directionToHome;        // direction to home point in degrees * 10
@@ -391,6 +392,7 @@ struct serialPort_s;
 bool gpsPassthrough(struct serialPort_s *gpsPassthroughPort);
 void onGpsNewData(void);
 void GPS_reset_home_position(void);
+void GPS_force_reset_home_position(void);
 void GPS_calc_longitude_scaling(int32_t lat);
 void GPS_distance_cm_bearing(const gpsLocation_t *from, const gpsLocation_t *to, bool dist3d, uint32_t *dist, int32_t *bearing);
 

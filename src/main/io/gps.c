@@ -69,6 +69,7 @@
 // GPS
 // **********************
 gpsLocation_t GPS_home_llh;
+gpsLocation_t GPS_true_home_llh;
 uint16_t GPS_distanceToHome;        // distance to home point in meters
 uint32_t GPS_distanceToHomeCm;
 int16_t GPS_directionToHome;        // direction to home or hol point in degrees * 10
@@ -2597,6 +2598,7 @@ void GPS_reset_home_position(void)
         if (STATE(GPS_FIX) && gpsSol.numSat >= gpsRescueConfig()->minSats) {
             // those checks are always true for tryArm, but may not be true for gyro cal
             GPS_home_llh = gpsSol.llh;
+            GPS_true_home_llh = gpsSol.llh;
             GPS_calc_longitude_scaling(gpsSol.llh.lat);
             ENABLE_STATE(GPS_FIX_HOME);
             // no point beeping success here since:
@@ -2605,6 +2607,24 @@ void GPS_reset_home_position(void)
             // PS: to test for gyro cal, check for !ARMED, since we cannot be here while disarmed other than via gyro cal
         }
     }
+
+#ifdef USE_GPS_UBLOX
+    // disable Sat Info requests on arming
+    if (gpsConfig()->provider == GPS_UBLOX) {
+        setSatInfoMessageRate(0);
+    }
+#endif
+    GPS_calculateDistanceFlown(true); // Initialize
+}
+
+void GPS_force_reset_home_position(void)
+{
+
+	if (STATE(GPS_FIX) && gpsSol.numSat >= gpsRescueConfig()->minSats) {
+		GPS_home_llh = gpsSol.llh;
+		GPS_calc_longitude_scaling(gpsSol.llh.lat);
+		ENABLE_STATE(GPS_FIX_HOME);
+	}
 
 #ifdef USE_GPS_UBLOX
     // disable Sat Info requests on arming

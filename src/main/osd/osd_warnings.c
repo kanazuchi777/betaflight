@@ -179,6 +179,12 @@ void renderOsdWarning(char *warningText, bool *blinking, uint8_t *displayAttr)
     *displayAttr = DISPLAYPORT_SEVERITY_NORMAL;
     *blinking = false;
 
+    if (IS_RC_MODE_ACTIVE(BOXLANDMODE)) {
+		tfp_sprintf(warningText, "LAND MODE");
+        *displayAttr = DISPLAYPORT_SEVERITY_WARNING;
+        return;
+	}
+
     // Cycle through the arming disabled reasons
     if (osdWarnGetState(OSD_WARNING_ARMING_DISABLE)) {
         if (IS_RC_MODE_ACTIVE(BOXARM) && isArmingDisabled()) {
